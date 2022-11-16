@@ -207,11 +207,11 @@ local function CreateWindow()
 	return Window
 end
 if game.PlaceId == 10404327868 then -- Timber Champions
-	local AttackLooping
 	local BossLooping
 	local OrbLooping
 	local ChestLooping
 	local AxeLooping
+	local AutoFarmLooping
 
 	local HatchLooping
 	local CraftLooping
@@ -219,15 +219,9 @@ if game.PlaceId == 10404327868 then -- Timber Champions
 
 	local TripleHatch
 
-	local SelectedAreas = {}
-	local SelectedLevels = {}
-
 	local SelectedEgg
 
 	local BestDelay = 5
-
-	local Areas = {"Clear List"}
-	local Levels = {"Clear List"}
 	local Eggs = {}
 	local Chests = {}
 	local BuyableAxes = {}
@@ -245,13 +239,6 @@ if game.PlaceId == 10404327868 then -- Timber Champions
 	local BossService = Knit.GetService("BossService")
 	local AxeService = Knit.GetService("AxeService")
 
-	for i,v in pairs(game:GetService("Workspace").Scripts.Trees:GetChildren()) do
-		table.insert(Areas, v.Name)
-	end
-
-	for i,v in pairs(game:GetService("Workspace").Scripts.Trees:FindFirstChild(Areas[2]):GetChildren()) do
-		table.insert(Levels, v.Name)
-	end
 
 	for i,v in pairs(game:GetService("Workspace").Scripts.Eggs:GetChildren()) do
 		if not string.find(v.Name:lower(), "robux") then
@@ -287,90 +274,8 @@ if game.PlaceId == 10404327868 then -- Timber Champions
 
 	local Main = Window:CreateTab("Main", 4483362458)
 
-	Main:CreateDropdown({
-		Name = "🏝 Area",
-		Options = Areas,
-		CurrentOption = "",
-		Flag = game.PlaceId.."SelectedArea",
-		Callback = function(Value)
-			if Value == "Clear List" then
-				table.clear(SelectedAreas)
-			elseif not table.find(SelectedAreas, Value) then
-				table.insert(SelectedAreas, Value)
-			end
-
-			if not AreaLabel then
-				repeat task.wait() until AreaLabel
-			end
-
-			AreaLabel:Set("Selected Areas: "..table.concat(SelectedAreas, ", "))
-		end,
-	})
-
-	AreaLabel = Main:CreateLabel("Selected Areas: None")
-
-	Main:CreateDropdown({
-		Name = "🔢 Level",
-		Options = Levels,
-		CurrentOption = "",
-		Flag = game.PlaceId.."SelectedLevel",
-		Callback = function(Value)
-			if Value == "Clear List" then
-				table.clear(SelectedLevels)
-			elseif not table.find(SelectedLevels, Value) then
-				table.insert(SelectedLevels, Value)
-			end
-
-			if not LevelLabel then
-				repeat task.wait() until LevelLabel
-			end
-
-			LevelLabel:Set("Selected Levels: "..table.concat(SelectedLevels, ", "))
-		end,
-	})
-
-	LevelLabel = Main:CreateLabel("Selected Areas: None")
-
-	Main:CreateToggle({
-		Name = "🌲 Auto Attack Tree",
-		CurrentValue = false,
-		Flag = game.PlaceId.."AutoAttack",
-		Callback = function(Value)
-			AttackLooping = Value
-		end,
-	})
-
-	task.spawn(function()
-		while task.wait() do
-			if AttackLooping and #SelectedAreas > 0 and #SelectedLevels > 0 then
-				for i = 2, #Levels, 1 do
-					if table.find(SelectedLevels, Levels[i]) then
-						for _,w in pairs(SelectedAreas) do
-							if game:GetService("Workspace").Scripts.Trees:FindFirstChild(w):FindFirstChild(Levels[i]) then
-								for _,v in pairs(game:GetService("Workspace").Scripts.Trees:FindFirstChild(w):FindFirstChild(Levels[i]).Storage:GetChildren()) do
-									local SectionLooping = true
-
-									while task.wait() and SectionLooping and AttackLooping do
-										pcall(function()
-											if not game:GetService("Workspace").Scripts.Trees:FindFirstChild(w):FindFirstChild(Levels[i]).Storage:FindFirstChild(v.Name) then
-												SectionLooping = false
-												print("[Goofy X] Debug: Tree Destroyed")
-											else
-												DamageRemote:FireServer(v.Name)
-											end
-										end)
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end)
-
 	Main:CreateSection("")
-
+	
 	Main:CreateToggle({
 		Name = "🐍 Auto Attack Bosses",
 		CurrentValue = false,
@@ -458,6 +363,16 @@ if game.PlaceId == 10404327868 then -- Timber Champions
 			end
 		end
 	end)
+
+	local Button = Main:CreateButton({
+		Name = "Reset Your Stat",
+		Callback = function()
+
+	game:GetService("ReplicatedStorage").Packages.Knit.Services.hej.RF["sweden ftw"]:InvokeServer()
+
+
+		end,
+	})	
 
 	local Pets = Window:CreateTab("Pets", 4483362458)
 
